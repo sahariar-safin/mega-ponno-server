@@ -6,6 +6,7 @@ const cors = require('cors')
 const MongoClient = require('mongodb').MongoClient;
 const ObjectID = require('mongodb').ObjectID;
 const FileUpload = require('express-fileupload');
+const { response } = require('express')
 const port = process.env.PORT || 5000;
 
 app.use(cors());
@@ -18,6 +19,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 client.connect(err => {
     const products = client.db(`${ process.env.DB_NAME }`).collection("products");
     const banner = client.db(`${ process.env.DB_NAME }`).collection("banner");
+    const order = client.db(`${ process.env.DB_NAME }`).collection("order");
 
     app.post("/addproduct", (req, res) => {
         const image = req.files.image;
@@ -100,6 +102,43 @@ client.connect(err => {
                 })
         }
     });
+
+    app.post('/categorizedProducts', (req, res) => {
+        console.log(req.body);
+        products.find({
+            category: req.body.categorySelected
+        })
+            .toArray((err, documents) => {
+                res.send(documents);
+            })
+    })
+
+    app.get("/product", (req, res) => {
+        console.log(req.query.id);
+        products.find({
+            productID: req.query.id
+        })
+            .toArray((err, documents) => {
+                res.send(documents);
+            })
+    })
+
+    app.post("/cartProducts", (req, res) => {
+        products.find({
+            productID: { $in: req.body }
+        })
+            .toArray((err, documents) => {
+                res.send(documents);
+            })
+    })
+
+    app.post('/addOrder', (req, res) => {
+        console.log(req.body);
+        order.insertOne(req.body)
+            .then(response => {
+                res.send(response);
+            })
+    })
 
 });
 

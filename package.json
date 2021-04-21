@@ -4,11 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node index",
+    "start-dev": "nodemon index",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Sahariar Shafin",
   "license": "ISC",
   "dependencies": {
+    "@material-ui/core": "^4.11.3",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
