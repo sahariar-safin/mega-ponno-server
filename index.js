@@ -150,8 +150,23 @@ client.connect(err => {
     })
 
     app.post('/addOrder', (req, res) => {
-        console.log(req.body);
         order.insertOne(req.body)
+            .then(response => {
+                res.send(response);
+            })
+    })
+
+    app.get('/orders', (req, res) => {
+        order.find({})
+            .toArray((err, documents) => {
+                res.send(documents);
+            })
+    })
+
+    app.post('/deleteOrder', (req, res) => {
+        order.deleteOne({
+            orderId: req.body.id
+        })
             .then(response => {
                 res.send(response);
             })
