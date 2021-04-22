@@ -23,19 +23,36 @@ client.connect(err => {
 
     app.post("/addproduct", (req, res) => {
         const image = req.files.image;
-        const imgData = {
-            size: image.size,
-            imageType: image.mimetype,
-            img: Buffer.from(image.data).toString('base64')
-        };
-        const product = {
-            ...req.body,
-            imgData
+        const image2 = req.files.image2;
+        if (image2) {
+            const imgData = {
+                size: image.size,
+                imageType: image.mimetype,
+                img: [Buffer.from(image.data).toString('base64'), Buffer.from(image2.data).toString('base64')]
+            };
+            const product = {
+                ...req.body,
+                imgData
+            }
+            products.insertOne(product)
+                .then(response => {
+                    res.send(response);
+                })
+        } else {
+            const imgData = {
+                size: image.size,
+                imageType: image.mimetype,
+                img: [Buffer.from(image.data).toString('base64')]
+            };
+            const product = {
+                ...req.body,
+                imgData
+            }
+            products.insertOne(product)
+                .then(response => {
+                    res.send(response);
+                })
         }
-        products.insertOne(product)
-            .then(response => {
-                res.send(response);
-            })
     });
 
     app.get('/manageproducts', (req, res) => {
